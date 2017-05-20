@@ -62,10 +62,11 @@ public class Release1 {
 	@Test
 	public void tc01() throws InstantiationException, IllegalAccessException, InterruptedException {
 
+		Global.getextntutils("TC_01").settestname("tc_01");
 		Local.workflows().getworkflow(IncidentCreation.class).performLogin("admin", "ServiceNow97bd916$");
-		Local.workflows().getworkflow(IncidentCreation.class).clickCreateNewIncident();
+		Local.workflows().getworkflow(IncidentCreation.class).clickCreateNewIncident("tc_01");
 		Local.workflows().getworkflow(IncidentCreation.class).performLogout();
-
+		Global.getextntutils("TC_01").endReport();
 	}
 
 	@AfterMethod

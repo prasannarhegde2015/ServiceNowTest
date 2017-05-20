@@ -47,6 +47,9 @@ public class IncidentPage {
 	@FindBy(id = "ok_button")
 	private WebElement btnOKDelete;
 
+	@FindBy(xpath = "//div[@class='activity_field' and  @label='Additional comments']")
+	private WebElement elemcomment;
+
 	public void EnterIncidentNumber(String incnumber) {
 		Global.getSeleniumUtils().enterValue(this.txtIncNumber, "Incident Number", incnumber);
 	}
@@ -76,11 +79,13 @@ public class IncidentPage {
 
 	}
 
-	public void verifynumber(String Dynaval) {
+	public void verifynumber(String Dynaval, String tcid) {
 
 		String acttext = Global.getSeleniumUtils().getText(this.txtIncNumber, "Incident Number");
-		Global.gethelperutils().creatextentReport("TC_01_step_01;Incident Number;" + Dynaval + ";" + acttext + ";");
-		// colnamesarr, colvals, screenshot_path);
+		Global.getextntutils(tcid).setSelDriver(this.driver);
+		// Global.gethelperutils().creatextentReport("step_01_Incident Number;"
+		// + Dynaval + ";" + acttext + ";");
+		Global.getextntutils(tcid).creatextentReport("step_01_Incident Number;" + Dynaval + ";" + acttext + ";");
 
 	}
 
@@ -88,8 +93,19 @@ public class IncidentPage {
 		Global.getSeleniumUtils().clickElem(this.btnDelete, "Delete Button");
 	}
 
+	public void ScrolltoConfirmComment() throws InterruptedException {
+		Global.getSeleniumUtils().scroll(this.elemcomment);
+	}
+
 	public void ClickConfirmDeleteButton() throws InterruptedException {
 		Global.getSeleniumUtils().waitforPresenseofElement(this.driver, this.btnOKDelete, "Confirm Delete Button");
 		Global.getSeleniumUtils().clickElem(this.btnOKDelete, "Confirm Delete Button");
+	}
+
+	public void verifyComttext(String exptext, String tcid) {
+		String acttext = Global.getSeleniumUtils().getText(this.elemcomment, "Added Commnet");
+		// Global.gethelperutils().creatextentReport("step_02_Added Comment;" +
+		// exptext + ";" + acttext + ";");
+		Global.getextntutils(tcid).creatextentReport("step_02_Added Comment;" + exptext + ";" + acttext + ";");
 	}
 }

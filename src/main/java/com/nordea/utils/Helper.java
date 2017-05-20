@@ -9,6 +9,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -27,6 +29,20 @@ public class Helper {
 
 	final Logger alogger = LogManager.getLogger(Helper.class);
 	private String name;
+	private static WebDriver selDriver;
+	private String clstcname = "";
+
+	public static WebDriver getSelDriver() {
+		return selDriver;
+	}
+
+	public static void setSelDriver(WebDriver drv) {
+		selDriver = drv;
+	}
+
+	public Helper() {
+
+	}
 
 	public String getName() {
 		return this.name;
@@ -34,10 +50,6 @@ public class Helper {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Helper() {
-
 	}
 
 	public Properties readpropertiesfileall() {
@@ -172,14 +184,19 @@ public class Helper {
 		// File rfile = new File(reportfilepath);
 		// ExtentReports report;
 		// if (!rfile.exists() )
+
 		// {
+		alogger.error("Inside Create Extnert");
 		try {
 			String rlocation = System.getProperty("user.dir");
 			String reportfilepath = rlocation + "\\test-output\\result\\" + "testresult.html";
 			String screenshot_path = rlocation + "\\test-output\\result\\screenshot";
+			createdir(screenshot_path);
+			String strtimestatmp = new SimpleDateFormat("ddMMMYYYYhhmmss").format(new Date());
 			ExtentReports report = new ExtentReports(reportfilepath, false);
 			// }
 			// String[] arrcolnames = colnamesarr.split(";");
+			alogger.error("vlues are" + colvals);
 			String[] arrcolvalues = colvals.split(";");
 			String tcname = arrcolvalues[0];
 			String tcfield = arrcolvalues[1];
@@ -189,15 +206,21 @@ public class Helper {
 			if (!strexp.equals(stract)) {
 				status = "fail";
 			}
+			clstcname = tcname;
 
 			ExtentTest logger = report.startTest(tcname);
 
 			if (status.equalsIgnoreCase("pass")) {
+				alogger.error("In Pass");
 				logger.log(LogStatus.PASS, tcfield + ": Expected Result- " + strexp + " : Actual Result-" + stract);
+				alogger.error("In Pass Out");
 			} else if (status.equalsIgnoreCase("fail")) {
-				String image = logger.addScreenCapture(screenshot_path);
+				alogger.error("In Fail ");
+				CaptureScreesnhot(this.getSelDriver(), screenshot_path + "\\Image_" + strtimestatmp + ".jpg");
+				String image = logger.addScreenCapture(screenshot_path + "\\Image_" + strtimestatmp + ".jpg");
 				logger.log(LogStatus.FAIL, tcfield + ": Expected Result- " + strexp + " : Actual Result-" + stract,
 						image);
+				alogger.error("Out Fail ");
 			} else if (status.equalsIgnoreCase("info")) {
 				logger.log(LogStatus.INFO, tcfield);
 			} else if (status.equalsIgnoreCase("warn")) {
@@ -210,6 +233,26 @@ public class Helper {
 			alogger.error("Error in function CreateExtentReport" + ex.toString());
 		}
 
+	}
+
+	public void createdir(String dirname) {
+		File theDir = new File(dirname);
+
+		// if the directory does not exist, create it
+		if (!theDir.exists()) {
+			System.out.println("creating directory: " + theDir.getName());
+			boolean result = false;
+
+			try {
+				theDir.mkdir();
+				result = true;
+			} catch (SecurityException se) {
+				// handle it
+			}
+			if (result) {
+				System.out.println("DIR created");
+			}
+		}
 	}
 
 }

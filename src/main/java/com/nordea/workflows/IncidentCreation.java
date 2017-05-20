@@ -38,7 +38,8 @@ public class IncidentCreation {
 
 	}
 
-	public void clickCreateNewIncident() throws InterruptedException, InstantiationException, IllegalAccessException {
+	public void clickCreateNewIncident(String tcid)
+			throws InterruptedException, InstantiationException, IllegalAccessException {
 
 		Local.pages().getpage(HomePage.class).swithchtoDefault();
 		Local.pages().getpage(HomePage.class).swithchtoMainrame();
@@ -59,8 +60,10 @@ public class IncidentCreation {
 		Local.pages().getpage(IncidentPage.class).clickSubmit();
 		// Thread.sleep(3000);
 		Local.pages().getpage(IncidentPage.class).Clickrdynalink(dyincnum);
-		Local.pages().getpage(IncidentPage.class).verifynumber(dyincnum);
-
+		Thread.sleep(3000);
+		Local.pages().getpage(IncidentPage.class).verifynumber(dyincnum, tcid);
+		Local.pages().getpage(IncidentPage.class).ScrolltoConfirmComment();
+		Local.pages().getpage(IncidentPage.class).verifyComttext("Any text", tcid);
 		Local.pages().getpage(IncidentPage.class).ClickDeleteButton();
 		Local.pages().getpage(IncidentPage.class).ClickConfirmDeleteButton();
 

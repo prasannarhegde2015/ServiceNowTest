@@ -10,6 +10,8 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -109,9 +111,18 @@ public class SeleniumUtils {
 	}
 
 	public String getText(WebElement el, String elname) {
+		String val = "";
 		try {
-			logger.info("Element text retruned is " + el.getAttribute("value"));
-			return el.getAttribute("value");
+
+			if (el.getText().length() < 1) {
+				val = el.getAttribute("value");
+				logger.info("Value null for " + elname);
+			} else {
+				val = el.getText();
+				logger.info("Value IS NOT NULL But something else for " + elname);
+			}
+			logger.info("Element text retruned is " + val);
+			return val;
 		} catch (NoSuchElementException ex) {
 			logger.error(ERR_NOELEM.replace("[ElemName]", elname).replace("[Excepption]", ex.toString()));
 			return "";
@@ -121,6 +132,16 @@ public class SeleniumUtils {
 		} catch (Exception ex) {
 			logger.error(ERR_OTH.replace("[ElemName]", elname).replace("[Excepption]", ex.toString()));
 			return "";
+		} finally {
+			logger.info("Finalli Satement");
+			if (val == "") {
+				logger.info("NoVal");
+				// val = el.getAttribute("value");
+				val = "Blank";
+			} else {
+
+				logger.info("YaVal");
+			}
 		}
 	}
 
@@ -279,5 +300,12 @@ public class SeleniumUtils {
 		} catch (Exception ex) {
 			return false;
 		}
+	}
+
+	public void scroll(WebElement e) throws InterruptedException {
+		Coordinates cor = ((Locatable) e).getCoordinates();
+		cor.inViewPort();
+		Thread.sleep(1000);
+
 	}
 }
